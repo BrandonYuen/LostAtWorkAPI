@@ -89,3 +89,4 @@ typings/
 
 # Database credentials
 credentials.js
+src/config/credentials.js
