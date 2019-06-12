@@ -5,9 +5,21 @@ var mongoose    = require('mongoose');
 var config      = require('./config/config');
 var port        = process.env.PORT || 3000; 
 var cors        = require('cors');
+var fs          = require('fs');
+var https       = require("https");
+var helmet      = require("helmet");
  
+
+const options = {
+  key: fs.readFileSync("/etc/letsencrypt/live/www.brandonyuen.nl/privkey.pem"),
+  cert: fs.readFileSync("/etc/letsencrypt/live/www.brandonyuen.nl/fullchain.pem")
+};
+
 var app = express();
+
+// Middleware
 app.use(cors());
+app.use(helmet());
  
 // get our request parameters
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -40,5 +52,6 @@ connection.on('error', (err) => {
 });
  
 // Start the server
-app.listen(port);
-console.log('There will be dragons: http://localhost:' + port);
+https.createServer(options, app).listen(port, function(){
+	console.log("Started HTTPS server. ("+port+")");
+});
