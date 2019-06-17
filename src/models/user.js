@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
+const ObjectId = mongoose.Schema.Types.ObjectId;
 let UserSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -13,6 +14,11 @@ let UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
+  },
+  isExpert: {
+    type: Boolean,
+    required: true,
+    default: false
   }
 })
  

@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
 function createToken(user) {
-  return jwt.sign({ id: user.id }, config.jwtSecret, {
-    expiresIn: 1000000 //24h
+  return jwt.sign({ id: user.id, isExpert: user.isExpert }, config.jwtSecret, {
+    expiresIn: 2592000000 //30 days
   })
 }
 
@@ -15,7 +15,7 @@ exports.registerUser = (req, res) => {
 
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) {
-      return res.result(400).json({ 'msg': err })
+      return res.status(400).json({ 'msg': err })
     }
 
     if (user) {
@@ -28,7 +28,7 @@ exports.registerUser = (req, res) => {
         return res.status(500).json({ 'msg': err.message })
       }
 
-      return res.status(201).json(newUser);
+      return res.status(201).send()
     })
   })
 }
@@ -40,7 +40,7 @@ exports.loginUser = (req, res) => {
 
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) {
-      return res.result(400).json({ 'msg': err})
+      return res.status(400).json({ 'msg': err})
     }
 
     if (!user) {

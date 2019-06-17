@@ -1,13 +1,22 @@
 const DiaryEntry = require('../models/diary-entry')
 
-exports.getAllEntries = (req, res) => {
+exports.getAllEntriesByUserId = (req, res) => {
   if (!req.user.id) {
     return res.status(400).json({ 'msg': 'No user id found in auth token.'})
   }
 
-  DiaryEntry.find({ userId: req.user.id }, (err, entries) => {
+  let userId = req.user.id;
+
+  if (req.user.isExpert) {
+    if (!req.params.userId) {
+      return res.status(400).json({ 'msg': 'Expert Query: No userId found in params'})
+    }
+    userId = req.params.userId;
+  }
+
+  DiaryEntry.find({ userId: userId }, (err, entries) => {
     if (err) {
-      return res.result(500).json({ 'msg': err })
+      return res.status(500).json({ 'msg': err })
     }
 
     if (!entries) {
@@ -29,7 +38,7 @@ exports.getEntryById = (req, res) => {
 
   DiaryEntry.findOne({ _id: req.params.entryId }, (err, entry) => {
     if (err) {
-      return res.result(500).json({ 'msg': err })
+      return res.status(500).json({ 'msg': err })
     }
 
     if (!entry) {
@@ -56,7 +65,7 @@ exports.deleteEntryById = (req, res) => {
 
   DiaryEntry.findOne({ _id: req.params.entryId }, (err, entry) => {
     if (err) {
-      return res.result(500).json({ 'msg': err })
+      return res.status(500).json({ 'msg': err })
     }
 
     if (!entry) {
@@ -71,7 +80,7 @@ exports.deleteEntryById = (req, res) => {
     // Delete entry
     DiaryEntry.deleteOne({ _id: req.params.entryId }, (err) => {
       if (err) {
-        return res.result(400).json({ 'msg': err })
+        return res.status(400).json({ 'msg': err })
       }
       console.log('Deleted entry: ', req.params.entryId);
       return res.status(200).send()
@@ -118,7 +127,7 @@ exports.updateEntryById = (req, res) => {
 
   DiaryEntry.findOne({ _id: req.params.entryId }, (err, entry) => {
     if (err) {
-      return res.result(500).json({ 'msg': err })
+      return res.status(500).json({ 'msg': err })
     }
 
     if (!entry) {

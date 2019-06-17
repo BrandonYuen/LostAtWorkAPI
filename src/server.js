@@ -10,10 +10,12 @@ var https       = require("https");
 var helmet      = require("helmet");
  
 
-const options = {
-  key: fs.readFileSync("/etc/letsencrypt/live/www.brandonyuen.nl/privkey.pem"),
-  cert: fs.readFileSync("/etc/letsencrypt/live/www.brandonyuen.nl/fullchain.pem")
-};
+if (process.env.NODE_ENV == "prod") {
+  const options = {
+    key: fs.readFileSync("/etc/letsencrypt/live/www.brandonyuen.nl/privkey.pem"),
+    cert: fs.readFileSync("/etc/letsencrypt/live/www.brandonyuen.nl/fullchain.pem")
+  };
+}
 
 var app = express();
 
@@ -52,6 +54,12 @@ connection.on('error', (err) => {
 });
  
 // Start the server
-https.createServer(options, app).listen(port, function(){
-	console.log("Started HTTPS server. ("+port+")");
-});
+if (process.env.NODE_ENV == "prod") {
+  https.createServer(options, app).listen(port, function(){
+    console.log("Started as PROD HTTPS server. ("+port+")");
+  });
+} else {
+  app.listen(port, () => {
+    console.log("Started as DEV server on port ("+port+")");
+  })
+}
