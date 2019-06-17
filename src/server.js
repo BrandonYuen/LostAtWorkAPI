@@ -10,8 +10,9 @@ var https       = require("https");
 var helmet      = require("helmet");
  
 
+let options = {}
 if (process.env.NODE_ENV == "prod") {
-  const options = {
+  options = {
     key: fs.readFileSync("/etc/letsencrypt/live/www.brandonyuen.nl/privkey.pem"),
     cert: fs.readFileSync("/etc/letsencrypt/live/www.brandonyuen.nl/fullchain.pem")
   };

@@ -41,7 +41,6 @@ exports.getChatByChatId = (req, res) => {
     if (!chat) {
       return res.status(404).json({ 'msg': 'No chat found with ID ' + req.params.chatId })
     }
-    console.log('chat: ', chat)
 
     // Check if user is a client or expert belonging to this chat
     if ( ((chat.clientId != req.user.id) && (chat.expertId != req.user.id)) ) {
@@ -75,7 +74,6 @@ exports.createChat = (req, res) => {
 
       // Check if the user creating this chat is an expert himself
       let clientIsExpert = () => {
-        console.log('Experts: ', expertUsers)
         let clientThatIsExpert = expertUsers.find( (user) => {
           return (user._id == req.user.id)
         })
